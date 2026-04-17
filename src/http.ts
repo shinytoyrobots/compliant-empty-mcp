@@ -20,6 +20,19 @@ function createMcpServer(): Server {
 }
 
 const app = express();
+
+app.use((_req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, Mcp-Session-Id, Last-Event-Id");
+  res.setHeader("Access-Control-Expose-Headers", "Mcp-Session-Id");
+  if (_req.method === "OPTIONS") {
+    res.status(204).end();
+    return;
+  }
+  next();
+});
+
 app.use(express.json());
 
 app.post("/mcp", async (req, res) => {
