@@ -1,0 +1,48 @@
+{
+  "name": "compliant-empty-mcp",
+  "version": "0.1.0",
+  "description": "An entirely empty MCP server that passes protocol conformance. A rhetorical artifact demonstrating that 'we have an MCP' is a meaningless claim.",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "compliant-empty-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "start:http": "node dist/http.js",
+    "conformance": "node scripts/conformance.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shinytoyrobots/compliant-empty-mcp.git"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "demo"
+  ],
+  "author": "Robin Cannon <robin@shinytoyrobots.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shinytoyrobots/compliant-empty-mcp/issues"
+  },
+  "homepage": "https://github.com/shinytoyrobots/compliant-empty-mcp#readme",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.0",
+    "typescript": "^5.9.3"
+  }
+}
