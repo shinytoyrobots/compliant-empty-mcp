@@ -4,6 +4,8 @@ An entirely empty MCP server that passes protocol conformance.
 
 This is a rhetorical artifact: a fully-valid Model Context Protocol server that advertises zero tools, zero resources, and zero prompts. It exists to demonstrate that **"we have an MCP" is a valueless claim**. MCP is a protocol, not a product. A server can be 100% conformant and do absolutely nothing.
 
+**Live instance:** https://compliant-empty-mcp-production.up.railway.app/mcp
+
 ## Run it (stdio)
 
 ```bash
@@ -37,23 +39,54 @@ curl -X POST http://localhost:3000/mcp \
   -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"curl","version":"0.1"}}}'
 ```
 
-### Deploy it
+## Test it
 
-The HTTP server runs on any platform that hosts Node.js. A `Dockerfile` is included.
-
-**Render** (free tier): connect this repo, set build command `npm install && npm run build`, start command `npm run start:http`.
-
-**Fly.io**: `fly launch` auto-detects the Dockerfile.
-
-**Railway**: import from GitHub, it auto-detects Node.js.
-
-## Verify conformance
+### Against the live instance
 
 ```bash
-npm run conformance
+curl -X POST https://compliant-empty-mcp-production.up.railway.app/mcp \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
 ```
 
-Output:
+Response: `{"result":{"tools":[]},"jsonrpc":"2.0","id":1}`
+
+### MCP Inspector
+
+```bash
+npx @modelcontextprotocol/inspector
+```
+
+In the Inspector UI, set **Transport Type** to "Streamable HTTP", **Connection Type** to "Direct", and **URL** to:
+
+```
+https://compliant-empty-mcp-production.up.railway.app/mcp
+```
+
+### Connect as an MCP client
+
+Add to `~/.claude.json` (Claude Code) or `~/Library/Application Support/Claude/claude_desktop_config.json` (Claude Desktop):
+
+```json
+{
+  "mcpServers": {
+    "compliant-empty-mcp": {
+      "type": "url",
+      "url": "https://compliant-empty-mcp-production.up.railway.app/mcp"
+    }
+  }
+}
+```
+
+The server will appear as a connected MCP with zero tools. That's the point.
+
+### Conformance probe (local)
+
+```bash
+npm run build
+npm run conformance
+```
 
 ```
 MCP conformance probe — compliant-empty-mcp
@@ -70,7 +103,15 @@ MCP conformance probe — compliant-empty-mcp
 8/8 checks passed.
 ```
 
-You can also point the [official MCP Inspector](https://github.com/modelcontextprotocol/inspector) at it — every check will pass because there is nothing to break.
+## Deploy your own
+
+The HTTP server runs on any platform that hosts Node.js. A multi-stage `Dockerfile` is included.
+
+**Railway**: import from GitHub. Set the custom start command to `npm run start:http` (under Service → Settings → Deploy).
+
+**Render** (free tier): connect this repo, set build command `npm install && npm run build`, start command `npm run start:http`.
+
+**Fly.io**: `fly launch` auto-detects the Dockerfile.
 
 ## How empty is it?
 
