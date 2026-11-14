@@ -21,12 +21,43 @@ function createMcpServer(): Server {
 
 const app = express();
 
-app.use((_req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, Mcp-Session-Id, Last-Event-Id");
-  res.setHeader("Access-Control-Expose-Headers", "Mcp-Session-Id");
-  if (_req.method === "OPTIONS") {
+// Origin validation (MCP spec: servers MUST validate Origin to prevent DNS rebinding).
+// Allowed: localhost/127.0.0.1/[::1] on any port, and any
+// origin listed in ALLOWED_ORIGINS (comma-separated). Requests with no Origin header
+// (non-browser clients like curl) are always allowed.
+const extraOrigins = new Set(
+  (process.env.ALLOWED_ORIGINS ?? "").split(",").map((o) => o.trim()).filter(Boolean),
+);
+
+function isAllowedOrigin(origin: string): boolean {
+  if (extraOrigins.has(origin)) return true;
+  let url: URL;
+  try {
+    url = new URL(origin);
+  } catch {
+    return false;
+  }
+  if (["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)) return true;
+  return false;
+}
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin !== undefined) {
+    if (!isAllowedOrigin(origin)) {
+      res.status(403).json({ error: "Forbidden: Origin not allowed" });
+      return;
+    }
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Accept, Mcp-Session-Id, Mcp-Protocol-Version, Last-Event-Id",
+    );
+    res.setHeader("Access-Control-Expose-Headers", "Mcp-Session-Id");
+  }
+  if (req.method === "OPTIONS") {
     res.status(204).end();
     return;
   }
