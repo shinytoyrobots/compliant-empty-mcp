@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // JSON-RPC conformance probe. Spawns dist/index.js, sends protocol messages over
-// stdio, and checks responses match the 9 ACs in sprints/.../story-001.
+// stdio, and checks responses against the MCP spec's lifecycle and list methods.
 //
 // Exits 0 if every check passes, 1 otherwise.
 
@@ -74,7 +74,7 @@ async function run() {
 
   // AC-2: initialize → valid InitializeResult with serverInfo
   const initRes = await request("initialize", {
-    protocolVersion: "2025-06-18",
+    protocolVersion: "2025-11-25",
     capabilities: {},
     clientInfo: { name: "conformance-probe", version: "0.0.1" },
   });
@@ -84,6 +84,10 @@ async function run() {
       typeof initRes.result?.protocolVersion === "string" &&
       typeof initRes.result?.capabilities === "object",
     `name=${initRes.result?.serverInfo?.name}, protocolVersion=${initRes.result?.protocolVersion}`,
+  );
+  check(
+    "Latest protocol version 2025-11-25 is negotiated",
+    initRes.result?.protocolVersion === "2025-11-25",
   );
 
   // AC-1: lifecycle — send initialized notification, server should not error

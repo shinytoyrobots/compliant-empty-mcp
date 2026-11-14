@@ -32,11 +32,13 @@ npm run start:http
 
 This starts a Streamable HTTP transport on port 3000 (or `$PORT`). The MCP endpoint is `POST /mcp`.
 
+Browser requests are checked against the `Origin` header, as the MCP spec requires, to block DNS rebinding. Allowed: `localhost`/`127.0.0.1`/`[::1]` on any port, the server's own host, and anything listed in `ALLOWED_ORIGINS` (comma-separated). Requests without an `Origin` header (curl, SDK clients) are unaffected.
+
 ```bash
 curl -X POST http://localhost:3000/mcp \
   -H "Content-Type: application/json" \
   -H "Accept: application/json, text/event-stream" \
-  -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"curl","version":"0.1"}}}'
+  -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"curl","version":"0.1"}}}'
 ```
 
 ## Test it
@@ -92,6 +94,7 @@ npm run conformance
 MCP conformance probe — compliant-empty-mcp
 
   [PASS] AC-2: initialize returns valid InitializeResult with serverInfo.name
+  [PASS] Latest protocol version 2025-11-25 is negotiated
   [PASS] AC-3: tools/list returns { tools: [] }
   [PASS] AC-4: resources/list returns { resources: [] }
   [PASS] AC-5: prompts/list returns { prompts: [] }
@@ -100,7 +103,13 @@ MCP conformance probe — compliant-empty-mcp
   [PASS] AC-9: stdio transport is the default and functional
   [PASS] AC-1: server terminates cleanly after stdin close
 
-8/8 checks passed.
+9/9 checks passed.
+```
+
+The same checks for the HTTP transport (including Origin handling):
+
+```bash
+npm run conformance:http
 ```
 
 ## Deploy your own
