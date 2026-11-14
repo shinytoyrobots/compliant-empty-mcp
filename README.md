@@ -6,6 +6,8 @@ This is a rhetorical artifact: a fully-valid Model Context Protocol server that 
 
 **Live instance:** https://compliant-empty-mcp-production.up.railway.app/mcp
 
+Speaks MCP protocol version `2025-11-25`. Requires Node 20 or later. See [CHANGELOG.md](CHANGELOG.md) for what changed.
+
 ## Run it (stdio)
 
 ```bash
@@ -122,9 +124,11 @@ The HTTP server runs on any platform that hosts Node.js. A multi-stage `Dockerfi
 
 **Fly.io**: `fly launch` auto-detects the Dockerfile.
 
+**Browser clients on another domain**: set `ALLOWED_ORIGINS` (comma-separated, e.g. `https://app.example.com`) or the server returns 403 for their requests. Non-browser clients are unaffected.
+
 ## How empty is it?
 
-The full implementation fits in one file:
+The full stdio implementation fits in one file (`src/index.ts`; `src/http.ts` adds the HTTP transport and Origin check):
 
 ```ts
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
