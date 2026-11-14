@@ -1,8 +1,8 @@
 # Changelog
 
-All notable changes to this project. Format follows [Keep a Changelog](https://keepachangelog.com/). The package version has not been bumped since 0.1.0, so everything after the first release sits under Unreleased.
+All notable changes to this project. Format follows [Keep a Changelog](https://keepachangelog.com/).
 
-## [Unreleased]
+## [0.2.0] - 2026-11-14
 
 ### Added
 - HTTP conformance probe (`npm run conformance:http`) covering lifecycle, empty lists, `-32601`, 405s, Origin handling, and CORS preflight (#7).

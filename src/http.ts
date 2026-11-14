@@ -10,7 +10,7 @@ import {
 
 function createMcpServer(): Server {
   const server = new Server(
-    { name: "compliant-empty-mcp", version: "0.1.0" },
+    { name: "compliant-empty-mcp", version: "0.2.0" },
     { capabilities: { tools: {}, resources: {}, prompts: {} } },
   );
   server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: [] }));
