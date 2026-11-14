@@ -8,7 +8,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 
 const server = new Server(
-  { name: "compliant-empty-mcp", version: "0.1.0" },
+  { name: "compliant-empty-mcp", version: "0.2.0" },
   { capabilities: { tools: {}, resources: {}, prompts: {} } },
 );
 

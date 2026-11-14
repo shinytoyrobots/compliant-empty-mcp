@@ -1,6 +1,6 @@
 {
   "name": "compliant-empty-mcp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "An entirely empty MCP server that passes protocol conformance. A rhetorical artifact demonstrating that 'we have an MCP' is a meaningless claim.",
   "type": "module",
   "main": "dist/index.js",
