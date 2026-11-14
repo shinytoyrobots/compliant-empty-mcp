@@ -32,7 +32,7 @@ npm run start:http
 
 This starts a Streamable HTTP transport on port 3000 (or `$PORT`). The MCP endpoint is `POST /mcp`.
 
-Browser requests are checked against the `Origin` header, as the MCP spec requires, to block DNS rebinding. Allowed: `localhost`/`127.0.0.1`/`[::1]` on any port, the server's own host, and anything listed in `ALLOWED_ORIGINS` (comma-separated). Requests without an `Origin` header (curl, SDK clients) are unaffected.
+Browser requests are checked against the `Origin` header, as the MCP spec requires, to block DNS rebinding. Allowed: `localhost`/`127.0.0.1`/`[::1]` on any port, and anything listed in `ALLOWED_ORIGINS` (comma-separated). Requests without an `Origin` header (curl, SDK clients) are unaffected.
 
 ```bash
 curl -X POST http://localhost:3000/mcp \

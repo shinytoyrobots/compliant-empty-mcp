@@ -22,14 +22,14 @@ function createMcpServer(): Server {
 const app = express();
 
 // Origin validation (MCP spec: servers MUST validate Origin to prevent DNS rebinding).
-// Allowed: localhost/127.0.0.1/[::1] on any port, the request's own Host, and any
+// Allowed: localhost/127.0.0.1/[::1] on any port, and any
 // origin listed in ALLOWED_ORIGINS (comma-separated). Requests with no Origin header
 // (non-browser clients like curl) are always allowed.
 const extraOrigins = new Set(
   (process.env.ALLOWED_ORIGINS ?? "").split(",").map((o) => o.trim()).filter(Boolean),
 );
 
-function isAllowedOrigin(origin: string, host: string | undefined): boolean {
+function isAllowedOrigin(origin: string): boolean {
   if (extraOrigins.has(origin)) return true;
   let url: URL;
   try {
@@ -38,13 +38,13 @@ function isAllowedOrigin(origin: string, host: string | undefined): boolean {
     return false;
   }
   if (["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)) return true;
-  return host !== undefined && url.host === host;
+  return false;
 }
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (origin !== undefined) {
-    if (!isAllowedOrigin(origin, req.headers.host)) {
+    if (!isAllowedOrigin(origin)) {
       res.status(403).json({ error: "Forbidden: Origin not allowed" });
       return;
     }
